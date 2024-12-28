@@ -1,19 +1,57 @@
 error_log /dev/stdout info;
+
+# HTTP - Redirect all traffic to HTTPS
 server {
-    listen ${NGINX_PORT};
-    access_log /dev/stdout;
+    listen 8003;
     server_name ${NGINX_SERVER_NAME};
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
 
     location / {
-        proxy_pass http://spiffworkflow-frontend:3001;
-        proxy_set_header X-Forwarded-Host $host:$server_port;
+        return 301 https://$host$request_uri;
+    }
+}
+
+# HTTPS
+server {
+    listen 443 ssl;
+    server_name ${NGINX_SERVER_NAME};
+    access_log /dev/stdout;
+
+    ssl_certificate /etc/letsencrypt/live/veloxpower.store/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/veloxpower.store/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # Added security headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
+
+    location / {
+        proxy_pass http://spiffworkflow-frontend:8001;
+        proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Prefix /;
+        proxy_redirect http:// https://;
     }
 
     location /api {
-        proxy_pass http://spiffworkflow-backend:3000;
-        proxy_set_header Host $host:$server_port;
+        proxy_pass http://spiffworkflow-backend:8000;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Prefix /api;
+        
+        # Important for OpenID redirects
+        proxy_redirect off;
+        proxy_buffering off;
     }
 }
