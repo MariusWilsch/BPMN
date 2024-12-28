@@ -7,6 +7,7 @@ services:
         condition: service_healthy
     environment:
       PORT0: "8001"
+      APPLICATION_ROOT: "/"
       SPIFFWORKFLOW_FRONTEND_RUNTIME_CONFIG_APP_ROUTING_STRATEGY: path_based
       SPIFFWORKFLOW_HOST: "veloxpower.store"
       SPIFFWORKFLOW_FRONTEND_RUNTIME_CONFIG_BACKEND_BASE_URL: "https://veloxpower.store/api"
@@ -18,27 +19,35 @@ services:
     container_name: spiffworkflow-backend
     image: ghcr.io/sartography/spiffworkflow-backend:main-latest
     environment:
-      SPIFFWORKFLOW_BACKEND_ENV: "local_docker"
-      FLASK_DEBUG: "0"
+      FLASK_DEBUG: "1"
+      SPIFFWORKFLOW_BACKEND_LOG_LEVEL: "DEBUG"
       FLASK_SESSION_SECRET_KEY: "super_secret_key"
+      SPIFFWORKFLOW_BACKEND_PORT: "8000"
+      SPIFFWORKFLOW_BACKEND_ENV: "local_docker"
       SPIFFWORKFLOW_BACKEND_PERMISSIONS_FILE_NAME: "local_development.yml"
+      # URL's
       SPIFFWORKFLOW_BACKEND_URL: "https://veloxpower.store/api"
       SPIFFWORKFLOW_BACKEND_URL_FOR_FRONTEND: "https://veloxpower.store"
       SPIFFWORKFLOW_BACKEND_OPEN_ID_SERVER_URL: "https://veloxpower.store/api/openid"
       SPIFFWORKFLOW_BACKEND_OPEN_ID_SERVER_INTERNAL_URL: "http://spiffworkflow-backend:8000/api/openid"
-      SPIFFWORKFLOW_BACKEND_BPMN_SPEC_ABSOLUTE_DIR: "/app/process_models"
       SPIFFWORKFLOW_BACKEND_CONNECTOR_PROXY_URL: "http://spiffworkflow-connector:8004"
+      # Directories
+      SPIFFWORKFLOW_BACKEND_BPMN_SPEC_ABSOLUTE_DIR: "/app/process_models"
+      # Database
       SPIFFWORKFLOW_BACKEND_DATABASE_TYPE: "postgres"
       SPIFFWORKFLOW_BACKEND_DATABASE_URI: "postgresql://spiffuser:spiffpass@spiffdb:5432/spiffworkflow"
-      SPIFFWORKFLOW_BACKEND_LOAD_FIXTURE_DATA: "false"
-      SPIFFWORKFLOW_BACKEND_LOG_LEVEL: "DEBUG"
+      SPIFFWORKFLOW_BACKEND_UPGRADE_DB: "true"
+      # OpenID
       SPIFFWORKFLOW_BACKEND_OPEN_ID_CLIENT_ID: "spiffworkflow-backend"
       SPIFFWORKFLOW_BACKEND_OPEN_ID_CLIENT_SECRET_KEY: "my_open_id_secret_key"
-      SPIFFWORKFLOW_BACKEND_PORT: "8000"
       SPIFFWORKFLOW_BACKEND_OPEN_ID_INTERNAL_URL_IS_VALID_ISSUER: "true"
-      SPIFFWORKFLOW_BACKEND_WSGI_PATH_PREFIX: "/api"
       SPIFFWORKFLOW_BACKEND_USE_WERKZEUG_MIDDLEWARE_PROXY_FIX: "true"
+      SPIFFWORKFLOW_BACKEND_WSGI_PATH_PREFIX: "/api"
+      # Other
+      SPIFFWORKFLOW_BACKEND_LOAD_FIXTURE_DATA: "false"
+      SPIFFWORKFLOW_BACKEND_RUN_BACKGROUND_SCHEDULER_IN_CREATE_APP: "true"
     volumes:
+      # Directories
       - ./process_models:/app/process_models
       - spiffworkflow_backend_db:/app/db_volume
       - ./configs/permissions:/app/permissions
