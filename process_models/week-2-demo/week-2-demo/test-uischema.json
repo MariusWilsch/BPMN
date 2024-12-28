@@ -1,0 +1,22 @@
+{
+  "dachtyp": {
+    "ui:widget": "select"
+  },
+  "ersatzziegel": {
+    "ui:widget": "checkbox"
+  },
+  "dickeMasse": {
+    "ui:order": ["ziegelDicke", "konterlattenDicke", "totalDicke"],
+    "totalDicke": {
+      "ui:help": "Muss >73mm sein, wenn Unterlegplatte = 21mm"
+    }
+  },
+  "dachhaken": {
+    "typ": {
+      "ui:widget": "radio"
+    }
+  },
+  "sekuranten": {
+    "ui:widget": "checkbox"
+  }
+}

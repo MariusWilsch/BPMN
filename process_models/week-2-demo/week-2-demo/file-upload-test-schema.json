@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "title": "Invoice Upload",
+  "required": ["invoice_file"],
+  "properties": {
+    "invoice_file": {
+      "type": "string",
+      "title": "Upload Invoice",
+      "format": "data-url",
+      "description": "Please upload your invoice (PDF, PNG, or JPG)"
+    }
+  }
+}

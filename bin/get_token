@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+function error_handler() {
+  >&2 echo "Exited with BAD EXIT CODE '${2}' in ${0} script at line: ${1}."
+  exit "$2"
+}
+trap 'error_handler ${LINENO} $?' ERR
+set -o errtrace -o errexit -o nounset -o pipefail
+
+username="${1:-nelson}"
+
+curl -s -X POST "localhost:8000/openid/token?code=${username}:this_is_not_secure_do_not_use_in_production" -H "Authorization: Basic c3BpZmZ3b3JrZmxvdy1iYWNrZW5kOm15X29wZW5faWRfc2VjcmV0X2tleQ==" | jq -r .access_token

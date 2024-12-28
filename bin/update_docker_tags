@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+function error_handler() {
+  >&2 echo "Exited with BAD EXIT CODE '${2}' in ${0} script at line: ${1}."
+  exit "$2"
+}
+trap 'error_handler ${LINENO} $?' ERR
+set -o errtrace -o errexit -o nounset -o pipefail
+
+if ! command -v jq > /dev/null; then
+  >&2 echo "ERROR: this command requires jq to be installed."
+  exit 1
+fi
+
+branch=main
+
+docker_image_repos=(
+  "spiffworkflow-backend"
+  "spiffworkflow-frontend"
+)
+
+spiff_arena_directory="${HOME}/spiff-arena"
+if [[ ! -d "$spiff_arena_directory" ]]; then
+  git clone https://github.com/sartography/spiff-arena.git "$spiff_arena_directory"
+else
+  git -C "$spiff_arena_directory" pull
+fi
+
+current_year="$(date +%Y)"
+current_month="$(date +%m)"
+
+for docker_image_repo in "${docker_image_repos[@]}" ; do
+  normalized_repo_name=$(tr '-' '_' <<<"$docker_image_repo")
+  config_file="configs/${docker_image_repo}.env"
+  if [[ ! -f "$config_file" ]]; then
+    >&2 echo "ERROR: Could not find config file: ${config_file}"
+    exit 1
+  fi
+
+  tags=$("${spiff_arena_directory}/bin/list_ghcr_tags" "$docker_image_repo" "${branch}-${current_year}-${current_month}")
+  latest_tag="$(echo "${tags}" | jq -r '. | last')"
+  config_to_update="$(tr "[:lower:]" "[:upper:]" <<<"$normalized_repo_name")_TAG"
+  perl -pi -e "s/(${config_to_update}=).*/\1${latest_tag}/" "$config_file"
+done

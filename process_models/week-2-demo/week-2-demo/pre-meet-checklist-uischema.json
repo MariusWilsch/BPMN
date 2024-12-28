@@ -1,0 +1,9 @@
+{
+  "ui:order": [
+    "dokumentenPruefung",
+    "ausruestungsPruefung",
+    "produktPruefung",
+    "hinweisText",
+    "vorbereitungsBestaetigung"
+  ]
+}

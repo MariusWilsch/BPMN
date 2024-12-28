@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "title": "Drohnenaufnahmen Upload",
+  "required": ["uploadConfirmation"],
+  "properties": {
+    "instructions": {
+      "type": "object",
+      "title": "Anweisungen zum Upload",
+      "properties": {
+        "steps": {
+          "type": "null",
+          "title": "Bitte folgen Sie diesen Schritten:",
+          "description": "1. Drohnenkarte aus der Drohne entnehmen\n2. Karte am Computer anschließen\n3. Aufnahmen hochladen\n4. Unten bestätigen wenn der Upload abgeschlossen ist"
+        }
+      }
+    },
+    "uploadConfirmation": {
+      "type": "boolean",
+      "title": "Ich bestätige, dass ich die Drohnenaufnahmen erfolgreich hochgeladen habe",
+      "default": false
+    }
+  }
+}

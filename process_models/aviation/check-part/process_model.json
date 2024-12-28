@@ -1,0 +1,9 @@
+{
+    "description": "Process to check on aviation part",
+    "display_name": "Check part",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "check-part.bpmn",
+    "primary_process_id": "Process_check_part_qcpfm3t"
+}

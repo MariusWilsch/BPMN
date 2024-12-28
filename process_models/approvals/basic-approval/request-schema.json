@@ -1,0 +1,13 @@
+{
+  "title": "Request form",
+  "description": "We are about to ask you what you need.",
+  "type": "object",
+  "required": [
+    "request_item"
+  ],
+  "properties": {
+    "request_item": {
+      "type": "string",
+      "title": "What item would you like to request?"    }
+  }
+}

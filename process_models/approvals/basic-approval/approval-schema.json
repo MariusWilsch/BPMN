@@ -1,0 +1,15 @@
+{
+  "title": "Do you approve?",
+  "description": "Let us know what you think about this request",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "is_approved": {
+      "type": "boolean",
+      "title": "Approve?"
+    },
+    "comments": {
+      "type": "string"
+    }
+  }
+}

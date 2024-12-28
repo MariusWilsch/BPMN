@@ -1,0 +1,138 @@
+{
+  "ui:order": [
+  "rechnungsempfaenger",
+  "vollmacht",
+  "*",
+  "schaltkasten",
+  "wlanStatus",
+  "verteilerUpdate",
+  "sicherungsDaten",
+  "dach",
+  "kundendaten",
+  "sontiges"
+  ],
+  "datenVorOrtTermin": {
+    "ui:order": [
+      "rechnungsempfaenger",
+      "vollmacht",
+      "*",
+      "schaltkasten",
+      "wlanStatus",
+      "verteilerUpdate",
+      "sicherungsDaten"
+    ],
+    "rechnungsempfaenger": {
+      "emailadresse": {
+        "ui:placeholder": "kunde@example.com"
+      }
+    },
+    "wrPhoto": {
+      "ui:widget": "file",
+      "ui:options": {
+        "accept": "image/*"
+      },
+      "ui:help": "Bitte gut lesbare Aufnahme des Wechselrichters"
+    },
+    "spdPhoto": {
+      "ui:widget": "file",
+      "ui:options": {
+        "accept": "image/*"
+      }
+    },
+    "batPhoto": {
+      "ui:widget": "file",
+      "ui:options": {
+        "accept": "image/*"
+      }
+    },
+    "pePhoto": {
+      "ui:widget": "file",
+      "ui:options": {
+        "accept": "image/*"
+      }
+    },
+    "schaltkasten": {
+      "ui:order": [
+        "photo",
+        "tarifschalter",
+        "laengeACStreckeWR",
+        "kabelquerschnittWR",
+        "laengeACStreckeBlackout",
+        "kabelquerschnittBlackout"
+      ],
+      "photo": {
+        "ui:widget": "file",
+        "ui:options": {
+          "accept": "image/*"
+        },
+        "ui:help": "Bitte Tür geöffnet fotografieren"
+      },
+      "laengeACStreckeWR": {
+        "ui:widget": "updown"
+      },
+      "kabelquerschnittWR": {
+        "ui:widget": "updown"
+      },
+      "laengeACStreckeBlackout": {
+        "ui:widget": "updown"
+      },
+      "kabelquerschnittBlackout": {
+        "ui:widget": "updown"
+      }
+    },
+    "verteilerUpdate": {
+      "ui:order": [
+        "updateNoetig",
+        "selbstUmbau",
+        "serviceAnfrage",
+        "maengel"
+      ]
+    }
+  },
+  "kundendaten": {
+    "ui:order": [
+      "iban",
+      "zaehlpunktnummer",
+      "hauptwohnsitz",
+      "wohneinheitGroesse",
+      "anlagennummer",
+      "kundennummer",
+      "netzbetreiber",
+      "geburtsdatum",
+      "speicherGroesse",
+      "geplante_kwp"
+    ],
+    "iban": {
+      "ui:placeholder": "AT00 0000 0000 0000 0000",
+      "ui:help": "Bitte eine IBAN eingeben"
+    },
+    "zaehlpunktnummer": {
+      "ui:placeholder": "AT00..."
+    },
+    "wohneinheitGroesse": {
+      "ui:widget": "updown"
+    },
+    "speicherGroesse": {
+      "ui:widget": "updown"
+    },
+    "geplante_kwp": {
+      "ui:widget": "updown"
+    }
+  },
+  "sonstiges": {
+    "ui:order": [
+      "energiegemeinschaft",
+      "mehrwertsteuerAbzug",
+      "lieferAbstellort",
+      "prospektUebergeben",
+      "drohnenflug"
+    ],
+    "lieferAbstellort": {
+      "ui:widget": "file",
+      "ui:options": {
+        "accept": "image/*"
+      },
+      "ui:help": "Foto vom vereinbarten Lieferort"
+    }
+  }
+}

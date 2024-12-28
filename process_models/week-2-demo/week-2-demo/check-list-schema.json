@@ -1,0 +1,472 @@
+{
+  "type": "object",
+  "required": [
+    "datenVorOrtTermin",
+    "sonstiges",
+    "kundendaten"
+  ],
+  "properties": {
+    "datenVorOrtTermin": {
+      "type": "object",
+      "title": "Daten Vor-Ort-Termin (B2C)",
+      "properties": {
+        "rechnungsempfaenger": {
+          "type": "object",
+          "title": "Rechnungsempfänger abgefragt",
+          "description": "Sollte selbe Person sein die Strom bezieht + MUSS Person sein die Rechnung bezahlt",
+          "properties": {
+            "abweichenderEmpfaenger": {
+              "type": "string",
+              "title": "Abweichender Empfänger"
+            },
+            "emailadresse": {
+              "type": "string",
+              "title": "Emailadresse",
+              "format": "email"
+            }
+          }
+        },
+        "vollmacht": {
+          "type": "boolean",
+          "title": "Vollmacht (signiert)"
+        },
+        "wrPhoto": {
+          "type": "string",
+          "format": "data-url",
+          "title": "WR Photo"
+        },
+        "spdPhoto": {
+          "type": "string",
+          "format": "data-url",
+          "title": "SPDs Photo"
+        },
+        "batPhoto": {
+          "type": "string",
+          "format": "data-url",
+          "title": "BAT Photo"
+        },
+        "pePhoto": {
+          "type": "string",
+          "format": "data-url",
+          "title": "PE Photo"
+        },
+        "schaltkastenPhoto": {
+          "type": "string",
+          "format": "data-url",
+          "title": "Schaltkasten Photo"
+        },
+        "schaltkasten": {
+          "type": "object",
+          "title": "Schaltkasten",
+          "properties": {
+            "photo": {
+              "type": "string",
+              "format": "data-url",
+              "title": "Schaltkasten Photo"
+            },
+            "tarifschalter": {
+              "type": "boolean",
+              "title": "Tarifschalter vorhanden"
+            },
+            "laengeACStreckeWR": {
+              "type": "number",
+              "title": "Länge AC Strecke WR bis Verteiler (m)"
+            },
+            "kabelquerschnittWR": {
+              "type": "number",
+              "title": "Nötiger Kabelquerschnitt WR (mm²)"
+            },
+            "laengeACStreckeBlackout": {
+              "type": "number",
+              "title": "Länge AC Strecke Blackoutbox bis Verteiler (m)"
+            },
+            "kabelquerschnittBlackout": {
+              "type": "number",
+              "title": "Nötiger Kabelquerschnitt Blackout (mm²)"
+            }
+          }
+        },
+        "wlanStatus": {
+          "type": "object",
+          "title": "WLAN/LAN Status",
+          "properties": {
+            "vorhanden": {
+              "type": "boolean",
+              "title": "WLAN oder LAN bei WR vorhanden"
+            },
+            "wirdNachgeruestet": {
+              "type": "boolean",
+              "title": "WLAN oder LAN wird noch von Kunden nachgerüstet - Infoblatt an Kunden übergeben"
+            }
+          }
+        },
+        "verteilerUpdate": {
+          "type": "object",
+          "title": "Verteiler veraltet - Technisches Update",
+          "properties": {
+            "updateNoetig": {
+              "type": "boolean",
+              "title": "Technisches Update nötig"
+            },
+            "selbstUmbau": {
+              "type": "boolean",
+              "title": "Kunde sorgt selbst für Umbau"
+            },
+            "serviceAnfrage": {
+              "type": "boolean",
+              "title": "Kunde fordert uns auf jetzt den Umbauservice von Armin Schachinger anzufragen"
+            },
+            "maengel": {
+              "type": "object",
+              "title": "Festgestellte Mängel",
+              "properties": {
+                "tarifschalter": {
+                  "type": "boolean",
+                  "title": "Tarifschalter fehlt"
+                },
+                "ueberspannungsschutz": {
+                  "type": "boolean",
+                  "title": "AC-Überspannungsschutz fehlt"
+                },
+                "verkabelung": {
+                  "type": "boolean",
+                  "title": "Typ AC-Verkabelung möglicherweise nicht konform"
+                },
+                "zaehlerschleife": {
+                  "type": "boolean",
+                  "title": "Zählerschleife möglicherweise nicht konform"
+                },
+                "sonstiges": {
+                  "type": "boolean",
+                  "title": "Sonstiges"
+                }
+              }
+            }
+          }
+        },
+        "sicherungsDaten": {
+          "type": "object",
+          "title": "Sicherungs- und Vertragsdaten",
+          "properties": {
+            "hauptsicherung": {
+              "type": "boolean",
+              "title": "Wert Hauptsicherung (A) überprüft"
+            },
+            "bezugswert": {
+              "type": "boolean",
+              "title": "Bezugswert lt. Stromvertrag (kW) - bei Verwendung BlackOutBox überprüft"
+            }
+          }
+        }
+      }
+    },
+         "dach": {
+          "type": "object",
+          "title": "Dach",
+          "required": ["dachtyp"],
+          "properties": {
+            "dachtyp": {
+              "type": "string",
+              "title": "Dachtyp",
+              "enum": [
+                "Ziegel",
+                "Bitumen",
+                "Stehfalz",
+                "Warmdach",
+                "Trapez",
+                "Eternit",
+                "Flachdach"
+              ]
+            }
+          },
+          "dependencies": {
+            "dachtyp": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Ziegel"]
+                    },
+                    "ziegeltyp": {
+                      "type": "string",
+                      "title": "Ziegeltyp"
+                    },
+                    "ersatzziegel": {
+                      "type": "boolean",
+                      "title": "Ersatzziegel vorhanden"
+                    },
+                    "dickeMasse": {
+                      "type": "object",
+                      "title": "Abmessungen",
+                      "required": ["ziegelDicke", "konterlattenDicke", "totalDicke"],
+                      "properties": {
+                        "ziegelDicke": {
+                          "type": "number",
+                          "title": "Dicke des Ziegels (DZ) in mm"
+                        },
+                        "konterlattenDicke": {
+                          "type": "number",
+                          "title": "Dicke Konterlatte (DK) in mm"
+                        },
+                        "totalDicke": {
+                          "type": "number",
+                          "title": "Total DZ + DU in mm",
+                          "description": ">73mm, wenn Unterlegplatte = 21mm"
+                        }
+                      }
+                    },
+                    "dachhaken": {
+                      "type": "object",
+                      "title": "Entscheidung",
+                      "properties": {
+                        "typ": {
+                          "type": "string",
+                          "enum": [
+                            "Dachhaken Standard (DK + DK = 73mm)",
+                            "Dachhaken Sondergröße"
+                          ],
+                          "title": "Dachhaken Typ"
+                        },
+                        "hdHub": {
+                          "type": "number",
+                          "title": "HD Hub (mm)"
+                        }
+                      },
+                      "dependencies": {
+                        "typ": {
+                          "oneOf": [
+                            {
+                              "properties": {
+                                "typ": {
+                                  "enum": ["Dachhaken Standard (DK + DK = 73mm)"]
+                                }
+                              }
+                            },
+                            {
+                              "properties": {
+                                "typ": {
+                                  "enum": ["Dachhaken Sondergröße"]
+                                },
+                                "hdHub": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": ["hdHub"]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "sparrenabstand": {
+                      "type": "number",
+                      "title": "Sparrenabstand (cm)"
+                    }
+                  },
+                  "required": ["ziegeltyp", "dickeMasse", "dachhaken", "sparrenabstand"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Stehfalz"]
+                    },
+                    "stehfalzabstand": {
+                      "type": "number",
+                      "title": "Stehfalzabstand (cm)"
+                    },
+                    "stehfalzhoehe": {
+                      "type": "number",
+                      "title": "Stehfalzhöhe (cm)"
+                    }
+                  },
+                  "required": ["stehfalzabstand", "stehfalzhoehe"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Warmdach"]
+                    },
+                    "daemmstoffdicke": {
+                      "type": "number",
+                      "title": "Dämmstoffdicke Warmdach (cm)"
+                    },
+                    "daemmstofftyp": {
+                      "type": "string",
+                      "title": "Dämmstofftyp"
+                    }
+                  },
+                  "required": ["daemmstoffdicke", "daemmstofftyp"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Trapez"]
+                    },
+                    "trapezAbmessungen": {
+                      "type": "string",
+                      "title": "Trapezblech Abmessungen",
+                      "description": "Abstand Hochsicke - Hochsicke + Breite Hochsicke (cm)"
+                    }
+                  },
+                  "required": ["trapezAbmessungen"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Eternit"]
+                    },
+                    "eternitAbmessungen": {
+                      "type": "string",
+                      "title": "Eternit Abmessungen",
+                      "description": "Abstand Hochsicke - Hochsicke + Breite Hochsicke (cm)"
+                    }
+                  },
+                  "required": ["eternitAbmessungen"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Flachdach"]
+                    },
+                    "attika": {
+                      "type": "string",
+                      "title": "Attika - Breite und Höhe (cm)"
+                    },
+                    "gebaeudehoehe": {
+                      "type": "string",
+                      "title": "Höhe des Gebäudes"
+                    },
+                    "sekuranten": {
+                      "type": "boolean",
+                      "title": "Sekuranten"
+                    }
+                  },
+                  "required": ["attika", "gebaeudehoehe"]
+                },
+                {
+                  "properties": {
+                    "dachtyp": {
+                      "enum": ["Bitumen"]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+    "sonstiges": {
+      "type": "object",
+      "title": "Sonstiges",
+      "properties": {
+        "energiegemeinschaft": {
+          "type": "object",
+          "title": "Energiegemeinschaft",
+          "properties": {
+            "istMitglied": {
+              "type": "boolean",
+              "title": "Energiegemeinschaft?"
+            }
+          },
+          "if": {
+            "properties": {
+              "istMitglied": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "gemeinschaftsDetails": {
+                "type": "object",
+                "title": "Falls ja, welche?",
+                "properties": {
+                  "gea": {
+                    "type": "boolean",
+                    "title": "GEA"
+                  },
+                  "beg": {
+                    "type": "boolean",
+                    "title": "BEG"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "mehrwertsteuerAbzug": {
+          "type": "boolean",
+          "title": "Mehrwertsteuer abzugsfähig"
+        },
+        "prospektUebergeben": {
+          "type": "boolean",
+          "title": "Prospekt u Info zu weiteren Schritten übergeben"
+        },
+        "lieferAbstellort": {
+          "type": "string",
+          "title": "Liefer-Abstellort Material",
+          "format": "data-url"
+        },
+        "drohnenflug": {
+          "type": "object",
+          "title": "Drohenflug",
+          "properties": {
+            "durchgefuehrt": {
+              "type": "boolean",
+              "title": "Drohnenflug durchgeführt"
+            },
+            "nichtMoeglich": {
+              "type": "boolean",
+              "title": "Drohnenflug nicht möglich aufgrund luftrechtlicher Beschränkungen"
+            }
+          }
+        }
+      }
+    },
+    "kundendaten": {
+      "type": "object",
+      "title": "Kundendaten - f. Steckbrief",
+      "properties": {
+        "iban": {
+          "type": "string",
+          "title": "IBAN"
+        },
+        "hauptwohnsitz": {
+          "type": "boolean",
+          "title": "VO-Termin Adresse = Hauptwohnsitz"
+        },
+        "wohneinheitGroesse": {
+          "type": "number",
+          "title": "Größe der Wohneinheit (m²)"
+        },
+        "zaehlpunktnummer": {
+          "type": "string",
+          "title": "Zählpunktnummer"
+        },
+        "anlagennummer": {
+          "type": "string",
+          "title": "Anlagennummer"
+        },
+        "kundennummer": {
+          "type": "string",
+          "title": "Kundennummer"
+        },
+        "netzbetreiber": {
+          "type": "string",
+          "title": "Netzbetreiber"
+        },
+        "geburtsdatum": {
+          "type": "string",
+          "format": "date",
+          "title": "Geburtsdatum"
+        },
+        "speicherGroesse": {
+          "type": "number",
+          "title": "Geplanter Speicher (kWh brutto)"
+        },
+        "geplante_kwp": {
+          "type": "number",
+          "title": "Geplante kWp"
+        }
+      }
+    }
+  }
+}

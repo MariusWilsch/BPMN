@@ -1,0 +1,8 @@
+{
+  "invoice_file": {
+    "ui:widget": "file",
+    "ui:options": {
+      "accept": ".pdf,.png,.jpg"
+    }
+  }
+}

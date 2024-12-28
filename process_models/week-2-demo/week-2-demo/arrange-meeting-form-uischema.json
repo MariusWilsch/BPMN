@@ -1,0 +1,10 @@
+{
+  "meeting_start": {
+    "ui:widget": "datetime",
+    "ui:placeholder": "TT.MM.JJJJ HH:MM",
+    "ui:help": "Klicken Sie hier um den Kalender zu öffnen",
+    "ui:options": {
+      "yearsRange": [2024, 2025]
+    }
+  }
+}

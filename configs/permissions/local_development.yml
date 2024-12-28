@@ -1,0 +1,55 @@
+users:
+  admin:
+    service: local_open_id
+    email: admin@example.com
+    password: admin
+    preferred_username: Admin
+  nelson:
+    service: local_open_id
+    email: nelson@example.com
+    password: nelson
+    preferred_username: Nelson
+  patrick:
+    service: local_open_id
+    email: patrick@example.com
+    password: patrick
+    preferred_username: Patrick
+  test_user:
+    service: local_open_id
+    email: testing@example.com
+    password: testing
+    preferred_username: Test User
+
+groups:
+  admin:
+    users: [admin@example.com, nelson@example.com, patrick@example.com]
+  testing:
+    users: [testing@example.com]
+
+permissions:
+  # Admins have access to everything.
+  admin:
+    groups: [admin]
+    allowed_permissions: [all]
+    uri: /*
+
+  # Everybody can participate in tasks assigned to them.
+  # BASIC, PG, PM, are documented at https://spiff-arena.readthedocs.io/en/latest/DevOps_installation_integration/permission_url.html
+  basic:
+    groups: [everybody, testing]
+    allowed_permissions: [all]
+    uri: BASIC
+
+  # Everyone can see everything (all groups, and processes are visible)
+  read-all-process-groups:
+    groups: [everybody, testing]
+    allowed_permissions: [read]
+    uri: PG:ALL
+  read-all-process-models:
+    groups: [everybody, testing]
+    allowed_permissions: [read]
+    uri: PM:ALL
+  run-all-process-models:
+    groups: [everybody, testing]
+    allowed_permissions: [start]
+    uri: PM:ALL

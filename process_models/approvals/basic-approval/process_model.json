@@ -1,0 +1,9 @@
+{
+    "description": "",
+    "display_name": "basic-approval",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "basic-approval.bpmn",
+    "primary_process_id": "Process_basic_approval_yssia7n"
+}

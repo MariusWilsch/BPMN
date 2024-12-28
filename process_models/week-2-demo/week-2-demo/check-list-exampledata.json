@@ -1,0 +1,32 @@
+{
+  "datenVorOrtTermin": {
+    "dach": {
+      "dickeMasse": {},
+      "dachhaken": {},
+      "dachtyp": "Ziegel"
+    },
+    "rechnungsempfaenger": {},
+    "routingPhotos": [
+      null
+    ],
+    "verteilerUpdate": {
+      "maengel": []
+    }
+  },
+  "dach": {
+    "dickeMasse": {},
+    "dachhaken": {},
+    "details": {
+      "ersatzziegel": false
+    },
+    "dachtyp": "Ziegel"
+  },
+  "sonstiges": {
+    "energiegemeinschaft": {
+      "istMitglied": false,
+      "gea": false,
+      "beg": false
+    }
+  },
+  "kundendaten": {}
+}

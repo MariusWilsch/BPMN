@@ -1,0 +1,34 @@
+{
+  "vorbereitungsBestaetigung": false,
+  "preparationConfirmation": false,
+  "preparationSteps": "Please review and complete the following steps:\n\n1. Review customer's offer/contract\n2. Review initial planning documents/roof planning\n3. Check which products customer has purchased\n4. Ensure drone battery is charged\n5. Note special inspection points based on purchased products\n\nAll steps must be completed before the on-site visit.",
+  "documentReview": {
+    "items": [],
+    "contractReviewed": true,
+    "planningDocsReviewed": true,
+    "productsReviewed": true
+  },
+  "equipmentCheck": {
+    "items": [],
+    "droneBatteryCharged": true
+  },
+  "productChecks": {
+    "items": [],
+    "specialInspectionPoints": true
+  },
+  "confirmCompletion": false,
+  "confirmPreparation": false,
+  "checklistItems": [
+    "Review customer's offer/contract",
+    "Review initial planning documents/roof planning",
+    "Check which products customer has purchased",
+    "Ensure drone battery is charged",
+    "Note special inspection points based on purchased products (e.g. boiler location if heating system purchased)"
+  ],
+  "confirmation": false,
+  "confirmationNote": null,
+  "hinweisText": null,
+  "produktPruefung": null,
+  "ausruestungsPruefung": null,
+  "dokumentenPruefung": null
+}

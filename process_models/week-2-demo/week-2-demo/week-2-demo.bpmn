@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="week_2_demo" name="Week 2 Demo" isExecutable="true">
+    <bpmn:userTask id="Activity_0qpzdpu" name="Kundentermin ausmachen">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser># Vor-Ort Termin - Terminplanung
+## Zweck
+Dieses Formular unterstützt Sie bei der Planung eines Vor-Ort Termins mit dem Kunden. Der vereinbarte Termin wird automatisch in Ihren Google Kalender eingetragen.
+
+## Was Sie benötigen
+- Kontaktinformationen des Kunden
+- Zugriff auf Ihren Kalender zur Verfügbarkeitsprüfung
+
+## Was als Nächstes passiert
+1. Nach dem Absenden wird der Termin automatisch in Ihren Google Kalender eingetragen
+2. Die Eckdaten des Kunden werden in die Beschreibung eingefügt.
+
+## Kundeninformationen
+**Projektnummer:**  
+{{customer_data.properties.project_number}}
+
+**Name:**  
+{{customer_data.properties.customer_name}}
+
+**Telefonnummer des Kunden:**  
+**{{customer_data.properties.phone}}**
+
+**E-Mail:**  
+{{customer_data.properties.email}}
+
+**Adresse:**  
+{{customer_data.properties.address}}
+
+## Verfügbare Termine
+Bitte wählen Sie einen der folgenden Termine:
+
+{% for slot in customer_data.properties.availableTimeSlots %}
+- {{ slot }}
+{% endfor %}</spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="arrange-meeting-form-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="arrange-meeting-form-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:postScript />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bugcod</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xfaf2z</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="Event_0ctpq2c" name="Start Process">
+      <bpmn:outgoing>Flow_1bugcod</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_02ousvr" messageRef="start_process">
+        <bpmn:extensionElements>
+          <spiffworkflow:messageVariable>customer_data</spiffworkflow:messageVariable>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1xfaf2z" sourceRef="Activity_0qpzdpu" targetRef="Activity_1aoribd" />
+    <bpmn:serviceTask id="Activity_1aoribd" name="Erstelle Kalendereintrag">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequestV2" resultVariable="calendar_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#39;https://qaptomgixyfkbqcfdzrm.supabase.co/functions/v1/gCalConnector&#39;" />
+            <spiffworkflow:parameter id="headers" type="any" value="{     &#34;Authorization&#34;: &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcHRvbWdpeHlma2JxY2ZkenJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5ODU4OTYsImV4cCI6MjA0NDU2MTg5Nn0.XX9fYCrmmdyNpX_9g6oEVMy5jqmMouAFrAFDRXo_pWc&#34;,     &#34;Content-Type&#34;: &#34;application/json&#34; }" />
+            <spiffworkflow:parameter id="data" type="any" value="{&#34;startDateTime&#34;: meeting_start,  &#34;customer_data&#34;: customer_data}" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:instructionsForEndUser># Termin wird eingetragen
+Bitte warten Sie einen Moment. Der Termin am {{meeting_start}} wird in den Google Kalender eingetragen...</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xfaf2z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0adqb4a</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0adqb4a" sourceRef="Activity_1aoribd" targetRef="Activity_0ynm7jf" />
+    <bpmn:serviceTask id="Activity_0ynm7jf" name="Sende Checkliste zum Kunden">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequestV2">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#39;https://qaptomgixyfkbqcfdzrm.supabase.co/functions/v1/mail-connector&#39;" />
+            <spiffworkflow:parameter id="headers" type="any" value="{   &#34;Authorization&#34;: &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcHRvbWdpeHlma2JxY2ZkenJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5ODU4OTYsImV4cCI6MjA0NDU2MTg5Nn0.XX9fYCrmmdyNpX_9g6oEVMy5jqmMouAFrAFDRXo_pWc&#34;,   &#34;Content-Type&#34;: &#34;application/json&#34; }" />
+            <spiffworkflow:parameter id="data" type="any" value="{ &#34;templateType&#34;: &#34;CHECKLIST&#34;}" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:preScript />
+        <spiffworkflow:instructionsForEndUser># Checkliste wird versendet
+Die Vor-Ort-Termin Checkliste wird per E-Mail an {{customer_data.properties.customer_name}} versendet...</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0adqb4a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k5g1kf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1k5g1kf" sourceRef="Activity_0ynm7jf" targetRef="Activity_036f9hp" />
+    <bpmn:userTask id="Activity_036f9hp" name="Vorbereitung Vor-Ort-Termin">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="pre-meet-checklist-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="pre-meet-checklist-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:instructionsForEndUser># Vor-Ort Termin - Vorbereitungscheckliste
+
+## Zweck
+Diese Checkliste stellt sicher, dass Sie optimal auf den Vor-Ort Termin beim Kunden vorbereitet sind. Bitte überprüfen Sie alle Punkte sorgfältig.
+
+## Was Sie benötigen
+- [Kundendokumentation]({{customer_data.properties.document_link}})
+- Drohnenausrüstung
+
+## Was als Nächstes passiert
+1. Nach Bestätigung der Checkliste wird der Status aktualisiert
+2. Sie können zum Kunden fahren
+
+## Wichtiger Hinweis
+Durch das Setzen des Häkchens bestätigen Sie, dass alle Vorbereitungen abgeschlossen sind. Dies ist erforderlich, um fortzufahren.</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1k5g1kf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vwuojz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0ilbxk6" name="Vor-Ort Termin Checkliste">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="check-list-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="check-list-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:postScript># Define all possible photo fields
+files = {
+    'wrPhoto': 'wr_photo',
+    'spdPhoto': 'spd_photo',
+    'batPhoto': 'bat_photo',
+    'pePhoto': 'pe_photo',
+    'schaltkastenPhoto': 'schaltkasten_photo'
+}
+
+# Array to collect all photo data
+files_to_upload = []
+
+# Check root level photos in datenVorOrtTermin
+for field, name in files.items():
+    if datenVorOrtTermin.get(field):
+        encoded_data = get_encoded_file_data(datenVorOrtTermin[field])
+        files_to_upload.append({
+            'fileData': encoded_data,
+            'fileName': name
+        })
+
+# Check schaltkasten photo
+if datenVorOrtTermin.get('schaltkasten', {}).get('photo'):
+    encoded_data = get_encoded_file_data(datenVorOrtTermin['schaltkasten']['photo'])
+    files_to_upload.append({
+        'fileData': encoded_data,
+        'fileName': 'schaltkasten_detail'
+    })
+
+# Check sonstiges photo
+if sonstiges.get('lieferAbstellort'):
+    encoded_data = get_encoded_file_data(sonstiges['lieferAbstellort'])
+    files_to_upload.append({
+        'fileData': encoded_data,
+        'fileName': 'liefer_abstellort'
+    })</spiffworkflow:postScript>
+        <spiffworkflow:instructionsForEndUser />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jjyorf</bpmn:incoming>
+      <bpmn:incoming>Flow_1rl3i30</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xrewy9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_00y3azw">
+      <bpmn:incoming>Flow_01bysjl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_0h71ecg" name="Drone-Confirmation">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser />
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="drone-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="drone-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06f8h3o</bpmn:incoming>
+      <bpmn:outgoing>Flow_01bysjl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0ivof7a" name="Upload to Supabase">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequestV2">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#39;https://qaptomgixyfkbqcfdzrm.supabase.co/functions/v1/upload-file&#39;" />
+            <spiffworkflow:parameter id="headers" type="any" value="{       &#34;Content-Type&#34;: &#34;application/json&#34;,       &#34;Authorization&#34;: &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0&#34;     }" />
+            <spiffworkflow:parameter id="data" type="any" value="{&#34;fileData&#34;: files_to_upload, &#34;customer_data&#34;: customer_data}" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:preScript />
+        <spiffworkflow:instructionsForEndUser># Fotos werden verarbeitet
+
+## Was gerade passiert
+- Die Fotos vom Vor-Ort Termin werden hochgeladen
+- Die Daten werden in unserer Datenbank gespeichert
+- Die Bilder werden für die weitere Verarbeitung vorbereitet
+
+## Bitte warten
+Der Prozess läuft automatisch im Hintergrund. Dies kann einen Moment dauern.
+
+**Sie werden automatisch zum nächsten Schritt weitergeleitet, sobald der Upload abgeschlossen ist.**</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xrewy9</bpmn:incoming>
+      <bpmn:outgoing>Flow_06f8h3o</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1bugcod" sourceRef="Event_0ctpq2c" targetRef="Activity_0qpzdpu" />
+    <bpmn:sequenceFlow id="Flow_06f8h3o" sourceRef="Activity_0ivof7a" targetRef="Activity_0h71ecg" />
+    <bpmn:sequenceFlow id="Flow_01bysjl" sourceRef="Activity_0h71ecg" targetRef="Event_00y3azw" />
+    <bpmn:serviceTask id="Activity_1qkycra" name="Erinnerungsbenachrichtigung senden">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequestV2" resultVariable="reminder_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#39;https://qaptomgixyfkbqcfdzrm.supabase.co/functions/v1/mail-connector&#39;" />
+            <spiffworkflow:parameter id="headers" type="any" value="{   &#34;Authorization&#34;: &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcHRvbWdpeHlma2JxY2ZkenJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5ODU4OTYsImV4cCI6MjA0NDU2MTg5Nn0.XX9fYCrmmdyNpX_9g6oEVMy5jqmMouAFrAFDRXo_pWc&#34;,   &#34;Content-Type&#34;: &#34;application/json&#34; }" />
+            <spiffworkflow:parameter id="data" type="any" value="{ &#34;templateType&#34;: &#34;REMINDER&#34;}" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02iozl0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rl3i30</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1xrewy9" sourceRef="Activity_0ilbxk6" targetRef="Activity_0ivof7a" />
+    <bpmn:intermediateCatchEvent id="Event_0rbbp69" name="Warten bis zum Begin Vor-Ort Termin">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser># Timer: Warten auf Vor-Ort-Treffen
+
+**Dauer:** 30 Sekunden ⏲️
+
+Dieser Timer simuliert die Wartezeit zwischen der Besprechungsvorbereitung und der eigentlichen Besprechungszeit vor Ort. Während dieser Pause:
+- Der Prozess wird vorübergehend angehalten
+- Keine Benutzeraktion erforderlich
+- Prozess wird nach Ablauf des Timers automatisch fortgesetzt
+
+&gt; *Hinweis: In der Produktion würde dieser Timer auf die tatsächliche Startzeit der Besprechung eingestellt werden.*</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vwuojz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jjyorf</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0ppf47o">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">"PT30S"</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0vwuojz" sourceRef="Activity_036f9hp" targetRef="Event_0rbbp69" />
+    <bpmn:sequenceFlow id="Flow_1jjyorf" sourceRef="Event_0rbbp69" targetRef="Activity_0ilbxk6" />
+    <bpmn:boundaryEvent id="Event_0iiorbx" name="Erinnerung_Timer" attachedToRef="Activity_0ilbxk6">
+      <bpmn:outgoing>Flow_02iozl0</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0timwf1">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">"PT1M"</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_02iozl0" sourceRef="Event_0iiorbx" targetRef="Activity_1qkycra" />
+    <bpmn:sequenceFlow id="Flow_1rl3i30" sourceRef="Activity_1qkycra" targetRef="Activity_0ilbxk6" />
+  </bpmn:process>
+  <bpmn:message id="start_process" name="start_process" />
+  <bpmn:correlationProperty id="project_number" name="project_number">
+    <bpmn:correlationPropertyRetrievalExpression messageRef="start_process">
+      <bpmn:formalExpression>$.project_number</bpmn:formalExpression>
+    </bpmn:correlationPropertyRetrievalExpression>
+  </bpmn:correlationProperty>
+  <bpmn:correlationKey id="CorrelationKey_0lqbgql" name="MainCorrelationKey">
+    <bpmn:correlationPropertyRef>project_number</bpmn:correlationPropertyRef>
+  </bpmn:correlationKey>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="week_2_demo">
+      <bpmndi:BPMNShape id="Activity_0zjhvsq_di" bpmnElement="Activity_0qpzdpu">
+        <dc:Bounds x="130" y="-310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mpqpyd_di" bpmnElement="Event_0ctpq2c">
+        <dc:Bounds x="42" y="-288" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="27" y="-245" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ynk11s_di" bpmnElement="Activity_1aoribd">
+        <dc:Bounds x="280" y="-310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14ni26v_di" bpmnElement="Activity_0ynm7jf">
+        <dc:Bounds x="430" y="-310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_138gfld_di" bpmnElement="Activity_036f9hp">
+        <dc:Bounds x="570" y="-310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_104cz03_di" bpmnElement="Activity_0ilbxk6">
+        <dc:Bounds x="430" y="-190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00y3azw_di" bpmnElement="Event_00y3azw">
+        <dc:Bounds x="42" y="-168" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1akfszd_di" bpmnElement="Activity_0h71ecg">
+        <dc:Bounds x="130" y="-190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j2pycx_di" bpmnElement="Activity_0ivof7a">
+        <dc:Bounds x="280" y="-190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qpxp66_di" bpmnElement="Activity_1qkycra">
+        <dc:Bounds x="580" y="-60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19c7ch6_di" bpmnElement="Event_0rbbp69">
+        <dc:Bounds x="602" y="-168" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="584" y="-125" width="77" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1x5up38_di" bpmnElement="Event_0iiorbx">
+        <dc:Bounds x="442" y="-128" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="416" y="-85" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1xfaf2z_di" bpmnElement="Flow_1xfaf2z">
+        <di:waypoint x="230" y="-270" />
+        <di:waypoint x="280" y="-270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0adqb4a_di" bpmnElement="Flow_0adqb4a">
+        <di:waypoint x="380" y="-270" />
+        <di:waypoint x="430" y="-270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k5g1kf_di" bpmnElement="Flow_1k5g1kf">
+        <di:waypoint x="530" y="-270" />
+        <di:waypoint x="570" y="-270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bugcod_di" bpmnElement="Flow_1bugcod">
+        <di:waypoint x="78" y="-270" />
+        <di:waypoint x="130" y="-270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06f8h3o_di" bpmnElement="Flow_06f8h3o">
+        <di:waypoint x="280" y="-150" />
+        <di:waypoint x="230" y="-150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01bysjl_di" bpmnElement="Flow_01bysjl">
+        <di:waypoint x="130" y="-150" />
+        <di:waypoint x="78" y="-150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xrewy9_di" bpmnElement="Flow_1xrewy9">
+        <di:waypoint x="430" y="-150" />
+        <di:waypoint x="380" y="-150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vwuojz_di" bpmnElement="Flow_0vwuojz">
+        <di:waypoint x="620" y="-230" />
+        <di:waypoint x="620" y="-168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jjyorf_di" bpmnElement="Flow_1jjyorf">
+        <di:waypoint x="602" y="-150" />
+        <di:waypoint x="530" y="-150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02iozl0_di" bpmnElement="Flow_02iozl0">
+        <di:waypoint x="460" y="-92" />
+        <di:waypoint x="460" y="-20" />
+        <di:waypoint x="580" y="-20" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rl3i30_di" bpmnElement="Flow_1rl3i30">
+        <di:waypoint x="630" y="-60" />
+        <di:waypoint x="630" y="-80" />
+        <di:waypoint x="520" y="-80" />
+        <di:waypoint x="520" y="-110" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

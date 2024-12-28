@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "title": "Terminvereinbarung",
+  "required": ["meeting_start"],
+  "properties": {
+    "meeting_start": {
+      "type": "string", 
+      "format": "date-time",
+      "title": "Termin",
+      "description": "Standarddauer: 1 Stunde"
+    }
+  }
+}

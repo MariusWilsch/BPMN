@@ -1,0 +1,95 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "",
+    "display_name": "Week_2_Demo",
+    "messages": {
+        "request_in_notion": {
+            "correlation_properties": {
+                "project_number": {
+                    "retrieval_expression": "$.project_number"
+                }
+            },
+            "schema": {
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "customer_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "format": "email",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "project_number": {
+                        "description": "Unique project identifier",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "project_number",
+                    "customer_name",
+                    "phone",
+                    "email",
+                    "address"
+                ],
+                "type": "object"
+            }
+        },
+        "start_process": {
+            "correlation_properties": {
+                "project_number": {
+                    "retrieval_expression": "$.project_number"
+                }
+            },
+            "schema": {
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "availableTimeSlots": {
+                        "description": "List of available time slots for customer scheduling",
+                        "items": {
+                            "description": "Time slot in ISO 8601 format",
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "customer_name": {
+                        "type": "string"
+                    },
+                    "document_link": {
+                        "description": "Google Docs link for additional project documentation",
+                        "format": "uri",
+                        "type": "string"
+                    },
+                    "email": {
+                        "format": "email",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "project_number": {
+                        "description": "Unique project identifier",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "project_number",
+                    "customer_name",
+                    "phone",
+                    "email",
+                    "address"
+                ],
+                "type": "object"
+            }
+        }
+    }
+}

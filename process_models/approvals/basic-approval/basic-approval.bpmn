@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:collaboration id="Collaboration_approval">
+    <bpmn:participant id="Participant_05yb0cf" processRef="Process_basic_approval_yssia7n" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_basic_approval_yssia7n" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1xrsb7k">
+      <bpmn:lane id="Lane_admin" name="admin">
+        <bpmn:flowNodeRef>Activity_1m7ezna</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_did_approve</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1y0249o</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1c22616</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1u9oosv">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0qpzdpu</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17db3yp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_17db3yp" sourceRef="StartEvent_1" targetRef="Activity_0qpzdpu" />
+    <bpmn:sequenceFlow id="Flow_12pkbxb" sourceRef="Activity_0qpzdpu" targetRef="Activity_1m7ezna" />
+    <bpmn:sequenceFlow id="Flow_1cxor6o" sourceRef="Activity_1m7ezna" targetRef="Gateway_did_approve" />
+    <bpmn:userTask id="Activity_1m7ezna" name="Approve?">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="approval-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="approval-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:instructionsForEndUser>The person requested this:
+
+{{request_item}}</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12pkbxb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cxor6o</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_did_approve" name="Did approve?" default="Flow_0yhphwi">
+      <bpmn:incoming>Flow_1cxor6o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0axwlk2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yhphwi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0axwlk2" sourceRef="Gateway_did_approve" targetRef="Activity_1c22616">
+      <bpmn:conditionExpression>get_task_data_value("is_approved", False) == True</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0yhphwi" sourceRef="Gateway_did_approve" targetRef="Event_1y0249o" />
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>The process instance completed successfully.</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nv6x7q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1nv6x7q" sourceRef="Activity_1c22616" targetRef="EndEvent_1" />
+    <bpmn:endEvent id="Event_1y0249o">
+      <bpmn:incoming>Flow_0yhphwi</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_0qpzdpu" name="Submit request">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>This is a request for something. What it is, who knows. You could make a form for that in a more complete example.</spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="request-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="request-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17db3yp</bpmn:incoming>
+      <bpmn:outgoing>Flow_12pkbxb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="Activity_1c22616" name="You approved">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>By the way, you approved. It will all be on you.</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0axwlk2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nv6x7q</bpmn:outgoing>
+    </bpmn:manualTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_approval">
+      <bpmndi:BPMNShape id="Participant_05yb0cf_di" bpmnElement="Participant_05yb0cf" isHorizontal="true">
+        <dc:Bounds x="-25" y="-58" width="795" height="423" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1u9oosv_di" bpmnElement="Lane_1u9oosv" isHorizontal="true">
+        <dc:Bounds x="5" y="-58" width="765" height="125" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0sewo6y_di" bpmnElement="Lane_admin" isHorizontal="true">
+        <dc:Bounds x="5" y="67" width="765" height="298" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="25" y="-9" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lwca13_di" bpmnElement="Activity_1m7ezna">
+        <dc:Bounds x="297" y="130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0k0o1u5_di" bpmnElement="Gateway_did_approve" isMarkerVisible="true">
+        <dc:Bounds x="465" y="145" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="115" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14za570_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="682" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y0249o_di" bpmnElement="Event_1y0249o">
+        <dc:Bounds x="682" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lh4c5p_di" bpmnElement="Activity_0qpzdpu">
+        <dc:Bounds x="116" y="-31" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cykmm0_di" bpmnElement="Activity_1c22616">
+        <dc:Bounds x="550" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17db3yp_di" bpmnElement="Flow_17db3yp">
+        <di:waypoint x="61" y="9" />
+        <di:waypoint x="116" y="9" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12pkbxb_di" bpmnElement="Flow_12pkbxb">
+        <di:waypoint x="216" y="9" />
+        <di:waypoint x="347" y="9" />
+        <di:waypoint x="347" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cxor6o_di" bpmnElement="Flow_1cxor6o">
+        <di:waypoint x="397" y="170" />
+        <di:waypoint x="465" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0axwlk2_di" bpmnElement="Flow_0axwlk2">
+        <di:waypoint x="515" y="170" />
+        <di:waypoint x="550" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yhphwi_di" bpmnElement="Flow_0yhphwi">
+        <di:waypoint x="490" y="195" />
+        <di:waypoint x="490" y="280" />
+        <di:waypoint x="682" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nv6x7q_di" bpmnElement="Flow_1nv6x7q">
+        <di:waypoint x="650" y="170" />
+        <di:waypoint x="682" y="170" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

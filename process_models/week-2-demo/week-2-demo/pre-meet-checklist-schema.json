@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "title": "Vor-Ort Termin - Vorbereitungscheckliste",
+  "required": ["vorbereitungsBestaetigung"],
+  "properties": {
+    "dokumentenPruefung": {
+      "type": "null",
+      "title": "Dokumentenprüfung",
+      "description": "• Angebot/Vertrag des Kunden durchsehen\n\n• Planungsunterlagen/Dachplanung überprüfen\n\n• Gekaufte Produkte des Kunden notieren",
+      "readOnly": true
+    },
+    "ausruestungsPruefung": {
+      "type": "null",
+      "title": "Ausrüstungsprüfung",
+      "description": "• Drohnenbatterie vollständig geladen",
+      "readOnly": true
+    },
+    "produktPruefung": {
+      "type": "null",
+      "title": "Produktspezifische Prüfung",
+      "description": "• Spezielle Inspektionspunkte basierend auf gekauften Produkten notieren",
+      "readOnly": true
+    },
+    "vorbereitungsBestaetigung": {
+      "type": "boolean",
+      "title": "Bestätigung",
+      "default": false
+    }
+  }
+}

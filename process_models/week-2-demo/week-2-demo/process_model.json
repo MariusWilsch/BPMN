@@ -1,0 +1,11 @@
+{
+    "description": "",
+    "display_name": "Week 2 Demo",
+    "exception_notification_addresses": [
+        "marius.santiago.wilsch@gmail.com"
+    ],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": [],
+    "primary_file_name": "week-2-demo.bpmn",
+    "primary_process_id": "week_2_demo"
+}

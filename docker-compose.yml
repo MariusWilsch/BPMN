@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  spiffworkflow-frontend:
+    container_name: spiffworkflow-frontend
+    image: ghcr.io/sartography/spiffworkflow-frontend:main-latest
+    depends_on:
+      spiffworkflow-backend:
+        condition: service_healthy
+    environment:
+      PORT0: "3001"
+      SPIFFWORKFLOW_FRONTEND_RUNTIME_CONFIG_APP_ROUTING_STRATEGY: path_based
+      SPIFFWORKFLOW_HOST: "49.12.76.141"
+      SPIFFWORKFLOW_FRONTEND_RUNTIME_CONFIG_BACKEND_BASE_URL: "http://49.12.76.141:3003/api"
+
+  spiffworkflow-backend:
+    depends_on:
+      spiffdb:
+        condition: service_healthy
+    container_name: spiffworkflow-backend
+    image: ghcr.io/sartography/spiffworkflow-backend:main-latest
+    environment:
+      SPIFFWORKFLOW_BACKEND_ENV: "local_docker"
+      FLASK_DEBUG: "0"
+      FLASK_SESSION_SECRET_KEY: "super_secret_key"
+      SPIFFWORKFLOW_BACKEND_PERMISSIONS_FILE_NAME: "local_development.yml"
+      SPIFFWORKFLOW_BACKEND_URL: "http://49.12.76.141:3003/api"
+      SPIFFWORKFLOW_BACKEND_BPMN_SPEC_ABSOLUTE_DIR: "/app/process_models"
+      SPIFFWORKFLOW_BACKEND_CONNECTOR_PROXY_URL: "http://spiffworkflow-connector:3004"
+      SPIFFWORKFLOW_BACKEND_DATABASE_TYPE: "postgres"
+      SPIFFWORKFLOW_BACKEND_DATABASE_URI: "postgresql://spiffuser:spiffpass@spiffdb:5432/spiffworkflow"
+      SPIFFWORKFLOW_BACKEND_LOAD_FIXTURE_DATA: "false"
+      SPIFFWORKFLOW_BACKEND_LOG_LEVEL: "DEBUG"
+      SPIFFWORKFLOW_BACKEND_OPEN_ID_CLIENT_ID: "spiffworkflow-backend"
+      SPIFFWORKFLOW_BACKEND_OPEN_ID_CLIENT_SECRET_KEY: "my_open_id_secret_key"
+      SPIFFWORKFLOW_BACKEND_PORT: "3000"
+      SPIFFWORKFLOW_BACKEND_OPEN_ID_SERVER_URL: "http://49.12.76.141:3003/api/openid"
+      SPIFFWORKFLOW_BACKEND_URL_FOR_FRONTEND: "http://49.12.76.141:3003"
+      SPIFFWORKFLOW_BACKEND_OPEN_ID_SERVER_INTERNAL_URL: "http://spiffworkflow-backend:3000/api/openid"
+      SPIFFWORKFLOW_BACKEND_OPEN_ID_INTERNAL_URL_IS_VALID_ISSUER: "true"
+      SPIFFWORKFLOW_BACKEND_WSGI_PATH_PREFIX: "/api"
+      SPIFFWORKFLOW_BACKEND_USE_WERKZEUG_MIDDLEWARE_PROXY_FIX: "true"
+    volumes:
+      - ./process_models:/app/process_models
+      - spiffworkflow_backend_db:/app/db_volume
+      - ./configs/permissions:/app/permissions  # Add this line
+    healthcheck:
+      test: "curl http://localhost:3000/api/v1.0/status --fail"
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  spiffdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: spiffuser
+      POSTGRES_PASSWORD: spiffpass
+      POSTGRES_DB: spiffworkflow
+    volumes:
+      - spiffworkflow_backend_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spiffuser -d spiffworkflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  spiffworkflow-connector:
+    container_name: spiffworkflow-connector
+    image: ghcr.io/sartography/connector-proxy-demo:latest
+    environment:
+      FLASK_ENV: "development"
+      FLASK_DEBUG: "0"
+      FLASK_SESSION_SECRET_KEY: "super_secret_key"
+      CONNECTOR_PROXY_PORT: "3004"
+    healthcheck:
+      test: "curl http://localhost:3004/liveness --fail"
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  nginx-proxy:
+    container_name: proxy
+    image: nginx:latest
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./templates:/etc/nginx/templates
+    depends_on:
+      - spiffworkflow-frontend
+      - spiffworkflow-backend
+    environment:
+      NGINX_SERVER_NAME: "49.12.76.141"
+      NGINX_PORT: "3003"
+
+volumes:
+  spiffworkflow_backend_db:
+    driver: local

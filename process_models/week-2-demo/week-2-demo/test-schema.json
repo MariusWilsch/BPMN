@@ -1,0 +1,193 @@
+{
+  "type": "object",
+  "title": "Dach",
+  "required": ["dachtyp"],
+  "properties": {
+    "dachtyp": {
+      "type": "string",
+      "title": "Dachtyp",
+      "enum": [
+        "Ziegel",
+        "Bitumen",
+        "Stehfalz",
+        "Warmdach",
+        "Trapez",
+        "Eternit",
+        "Flachdach"
+      ]
+    }
+  },
+  "dependencies": {
+    "dachtyp": {
+      "oneOf": [
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Ziegel"]
+            },
+            "ziegeltyp": {
+              "type": "string",
+              "title": "Ziegeltyp"
+            },
+            "ersatzziegel": {
+              "type": "boolean",
+              "title": "Ersatzziegel vorhanden"
+            },
+            "dickeMasse": {
+              "type": "object",
+              "title": "Abmessungen",
+              "required": ["ziegelDicke", "konterlattenDicke", "totalDicke"],
+              "properties": {
+                "ziegelDicke": {
+                  "type": "number",
+                  "title": "Dicke des Ziegels (DZ) in mm"
+                },
+                "konterlattenDicke": {
+                  "type": "number",
+                  "title": "Dicke Konterlatte (DK) in mm"
+                },
+                "totalDicke": {
+                  "type": "number",
+                  "title": "Total DZ + DU in mm",
+                  "description": ">73mm, wenn Unterlegplatte = 21mm"
+                }
+              }
+            },
+            "dachhaken": {
+              "type": "object",
+              "title": "Entscheidung",
+              "properties": {
+                "typ": {
+                  "type": "string",
+                  "enum": [
+                    "Dachhaken Standard (DK + DK = 73mm)",
+                    "Dachhaken Sondergröße"
+                  ],
+                  "title": "Dachhaken Typ"
+                },
+                "hdHub": {
+                  "type": "number",
+                  "title": "HD Hub (mm)"
+                }
+              },
+              "dependencies": {
+                "typ": {
+                  "oneOf": [
+                    {
+                      "properties": {
+                        "typ": {
+                          "enum": ["Dachhaken Standard (DK + DK = 73mm)"]
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "typ": {
+                          "enum": ["Dachhaken Sondergröße"]
+                        },
+                        "hdHub": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["hdHub"]
+                    }
+                  ]
+                }
+              }
+            },
+            "sparrenabstand": {
+              "type": "number",
+              "title": "Sparrenabstand (cm)"
+            }
+          },
+          "required": ["ziegeltyp", "dickeMasse", "dachhaken", "sparrenabstand"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Stehfalz"]
+            },
+            "stehfalzabstand": {
+              "type": "number",
+              "title": "Stehfalzabstand (cm)"
+            },
+            "stehfalzhoehe": {
+              "type": "number",
+              "title": "Stehfalzhöhe (cm)"
+            }
+          },
+          "required": ["stehfalzabstand", "stehfalzhoehe"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Warmdach"]
+            },
+            "daemmstoffdicke": {
+              "type": "number",
+              "title": "Dämmstoffdicke Warmdach (cm)"
+            },
+            "daemmstofftyp": {
+              "type": "string",
+              "title": "Dämmstofftyp"
+            }
+          },
+          "required": ["daemmstoffdicke", "daemmstofftyp"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Trapez"]
+            },
+            "trapezAbmessungen": {
+              "type": "string",
+              "title": "Trapezblech Abmessungen",
+              "description": "Abstand Hochsicke - Hochsicke + Breite Hochsicke (cm)"
+            }
+          },
+          "required": ["trapezAbmessungen"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Eternit"]
+            },
+            "eternitAbmessungen": {
+              "type": "string",
+              "title": "Eternit Abmessungen",
+              "description": "Abstand Hochsicke - Hochsicke + Breite Hochsicke (cm)"
+            }
+          },
+          "required": ["eternitAbmessungen"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Flachdach"]
+            },
+            "attika": {
+              "type": "string",
+              "title": "Attika - Breite und Höhe (cm)"
+            },
+            "gebaeudehoehe": {
+              "type": "string",
+              "title": "Höhe des Gebäudes"
+            },
+            "sekuranten": {
+              "type": "boolean",
+              "title": "Sekuranten"
+            }
+          },
+          "required": ["attika", "gebaeudehoehe"]
+        },
+        {
+          "properties": {
+            "dachtyp": {
+              "enum": ["Bitumen"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
