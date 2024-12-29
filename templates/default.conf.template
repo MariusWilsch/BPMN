@@ -16,7 +16,7 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
 
     add_header Strict-Transport-Security "max-age=31536000" always;
-    proxy_cookie_path / "/; SameSite=lax";
+    proxy_cookie_path / "/; secure; SameSite=strict";
 
     location / {
         proxy_pass http://spiffworkflow-frontend:8001;
